@@ -1,0 +1,9 @@
+{% if lista_preguntas_actualizada %}
+    <ul>
+    {% for pregunta in lista_preguntas_actualizada %}
+        <li><a href="{% url 'polls:detalle' pregunta.id %}">{{ pregunta.enunciado_pregunta }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
