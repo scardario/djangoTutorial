@@ -6,24 +6,25 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
 from django.urls import reverse
+from django.views import generic
 
 from .models import Pregunta, Opcion
 
 
-def index(request):
-    lista_preguntas_actualizada = Pregunta.objects.order_by('-fecha_pub')[:5]
-    contexto = {
-        'lista_preguntas_actualizada': lista_preguntas_actualizada,
-    }
-    return render(request, 'polls/index.html', contexto)
+class vistaIndex(generic.ListView):
+    template_name = 'polls/index.html'
+    context_object_name = 'lista_preguntas_actualizada'
 
-def detalle(request, pregunta_id):
-    pregunta = get_object_or_404(Pregunta, pk=pregunta_id)
-    return render(request, "polls/detalle.html", {'pregunta': pregunta})
+    def get_queryset(self):
+        return Pregunta.objects.order_by('-fecha_pub')[:5]
 
-def resultados(request, pregunta_id):
-    respuesta = "Está consultando los resultados de la pregunta %s."
-    return HttpResponse(respuesta % pregunta_id)
+class vistaDetalle(generic.DetailView):
+    model = Pregunta
+    template_name = 'polls/detalle.html'
+
+class vistaResultados(generic.DetailView):
+    model = Pregunta
+    template_name = 'polls/resultados.html'
 
 def votacion(request, pregunta_id):
 
