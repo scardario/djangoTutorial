@@ -7,6 +7,7 @@ from django.template import loader
 
 from django.urls import reverse
 from django.views import generic
+from django.utils import timezone
 
 from .models import Pregunta, Opcion
 
@@ -16,11 +17,17 @@ class vistaIndex(generic.ListView):
     context_object_name = 'lista_preguntas_actualizada'
 
     def get_queryset(self):
-        return Pregunta.objects.order_by('-fecha_pub')[:5]
+        #incluye las últimas 5 preguntas sin incluir las futuras
+        return Pregunta.objects.filter(
+            fecha_pub__lte=timezone.now()
+        ).order_by('-fecha_pub')[:5]
 
 class vistaDetalle(generic.DetailView):
     model = Pregunta
     template_name = 'polls/detalle.html'
+    def get_queryset(self):
+        #excluye preguntas que no han sido publicadas
+        return Pregunta.objects.filter(fecha_pub__lte=timezone.now())
 
 class vistaResultados(generic.DetailView):
     model = Pregunta

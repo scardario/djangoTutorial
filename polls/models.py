@@ -11,12 +11,12 @@ class Pregunta(models.Model):
     fecha_pub = models.DateTimeField('fecha de publicación')
 
     def __str__(self):
-        return str(self.id) + " - " + str(self.enunciado_pregunta)
-        #return str(self.enunciado_pregunta)
+        #return str(self.id) + " - " + str(self.enunciado_pregunta)
+        return str(self.enunciado_pregunta)
 
     def fue_publicada_recientemente(self):
-        return self.fecha_pub >= timezone.now() - datetime.timedelta(days=1)
-
+        ahora = timezone.now()
+        return ahora - datetime.timedelta(days=1) <= self.fecha_pub <= ahora
 
 class Opcion(models.Model):
     pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
